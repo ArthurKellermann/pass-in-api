@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PassIn.Application.UseCases.Events.GetById;
 using PassIn.Application.UseCases.Events.Register;
+using PassIn.Application.UseCases.Events.RegisterAttendee;
 using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
-using PassIn.Exceptions;
 
 namespace PassIn.Api.Controllers;
 [Route("api/Events")]
@@ -15,22 +15,11 @@ public class EventsController : ControllerBase
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
     public IActionResult Register([FromBody] RequestEventJson request)
     {
-        try
-        {
-            var registerEventUseCase = new RegisterEventUseCase();
+        var registerEventUseCase = new RegisterEventUseCase();
 
-            var response = registerEventUseCase.Execute(request);
+        var response = registerEventUseCase.Execute(request);
 
-            return Created(string.Empty, response);
-        }
-        catch (PassInException ex)
-        {
-            return BadRequest(new ResponseErrorJson(ex.Message));
-        }
-        catch
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorJson("Unknown error."));
-        }
+        return Created(string.Empty, response);
     }
 
     [HttpGet]
@@ -39,22 +28,25 @@ public class EventsController : ControllerBase
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
     public IActionResult GetById([FromRoute] Guid id)
     {
-        try
-        {
-            var getEventByIdUseCase = new GetEventByIdUseCase();
+        var getEventByIdUseCase = new GetEventByIdUseCase();
 
-            var response = getEventByIdUseCase.Execute(id);
+        var response = getEventByIdUseCase.Execute(id);
 
-            return Ok(response);
+        return Ok(response);
 
-        }
-        catch (PassInException ex)
-        {
-            return NotFound(new ResponseErrorJson(ex.Message));
-        }
-        catch
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorJson("Unknown error."));
-        }
+    }
+
+    [HttpPost]
+    [Route("{eventId}/register")]
+    [ProducesResponseType(typeof(ResponseEventJson), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+    public IActionResult RegisterAttendeeOnEvent([FromRoute] Guid eventId,[FromBody] RequestRegisterEventJson request)
+    {
+        var registerAttendeeOnEventUseCase = new RegisterAttendeeOnEventUseCase();
+
+        var response = registerAttendeeOnEventUseCase.Execute(eventId, request);
+
+        return Created(string.Empty, response);
     }
 }

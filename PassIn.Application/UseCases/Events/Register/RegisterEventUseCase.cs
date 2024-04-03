@@ -31,19 +31,25 @@ public class RegisterEventUseCase
 
     private void Validate(RequestEventJson request)
     {
+        string errorMessage = string.Empty;
+
         if (request.MaximumAttendees <= 0)
         {
-            throw new PassInException("The Maximum attendees is invalid.");
+            errorMessage = "The maximum attendees is invalid.";
         }
 
         if (string.IsNullOrWhiteSpace(request.Title))
         {
-            throw new PassInException("The Title is invalid.");
+            errorMessage = "The title is invalid.";
         }
 
         if (string.IsNullOrWhiteSpace(request.Details))
         {
-            throw new PassInException("The Details are invalid.");
+            errorMessage = "The details are invalid.";
         }
+
+        if (!string.IsNullOrEmpty(errorMessage)) {
+            throw new ErrorOnValidationException(errorMessage);
+        }      
     }
 }

@@ -13,7 +13,7 @@ public class GetEventByIdUseCase
 
         if (entity is null)
         {
-            throw new PassInException("Event does not exists.");
+            throw new NotFoundException("Event does not exists.");
         }
 
         return new ResponseEventJson
