@@ -6,12 +6,13 @@ using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
 
 namespace PassIn.Api.Controllers;
+
 [Route("api/Events")]
 [ApiController]
 public class EventsController : ControllerBase
 {
     [HttpPost]
-    [ProducesResponseType(typeof(ResponseRegisterEventJson), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ResponseRegisterJson), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
     public IActionResult Register([FromBody] RequestEventJson request)
     {
@@ -34,19 +35,5 @@ public class EventsController : ControllerBase
 
         return Ok(response);
 
-    }
-
-    [HttpPost]
-    [Route("{eventId}/register")]
-    [ProducesResponseType(typeof(ResponseEventJson), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
-    public IActionResult RegisterAttendeeOnEvent([FromRoute] Guid eventId,[FromBody] RequestRegisterEventJson request)
-    {
-        var registerAttendeeOnEventUseCase = new RegisterAttendeeOnEventUseCase();
-
-        var response = registerAttendeeOnEventUseCase.Execute(eventId, request);
-
-        return Created(string.Empty, response);
     }
 }

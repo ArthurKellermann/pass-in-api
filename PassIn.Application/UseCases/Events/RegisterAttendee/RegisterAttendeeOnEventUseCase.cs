@@ -59,12 +59,12 @@ public class RegisterAttendeeOnEventUseCase
 
         if (attendeeAlreadyRegistered)
         {
-            throw new ErrorOnValidationException("You cannot register twice for the same event.");
+            throw new ConflictException("You cannot register twice for the same event.");
         }
 
         var attendeesForEvent = _dbContext.Attendees.Count(attendee => attendee.EventId == eventId);
 
-        if (attendeesForEvent >= eventEntity.Maximum_Attendees)
+        if (attendeesForEvent == eventEntity.Maximum_Attendees)
         {
             throw new ErrorOnValidationException("There is no room for this event.");
         }
