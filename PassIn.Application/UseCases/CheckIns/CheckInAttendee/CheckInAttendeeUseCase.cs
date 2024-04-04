@@ -1,47 +1,42 @@
 ﻿using PassIn.Communication.Responses;
-using PassIn.Exceptions;
-using PassIn.Infrastructure;
-using PassIn.Infrastructure.Entities;
+using PassIn.Domain.Entities;
+using PassIn.Domain.Repositories.Interfaces;
+using PassIn.Exceptions.CustomExceptions;
 
 namespace PassIn.Application.UseCases.CheckIns.CheckInAttendee;
 public class CheckInAttendeeUseCase
 {
-    private readonly PassInDbContext _dbContext;
-    public CheckInAttendeeUseCase()
+    private readonly ICheckInRepository checkInRepository;
+    private readonly IAttendeeRepository attendeeRepository;
+    public CheckInAttendeeUseCase(ICheckInRepository checkInRepository, IAttendeeRepository attendeeRepository)
     {
-        _dbContext = new PassInDbContext();
+        this.checkInRepository = checkInRepository;
+        this.attendeeRepository = attendeeRepository;
     }
-    public ResponseRegisteredJson Execute(Guid attendeeId)
+    public async Task<ResponseRegisteredJson> Execute(Guid attendeeId)
     {
         ValidateAttendee(attendeeId);
 
-        var entity = new CheckIn
-        {
-            Attendee_Id = attendeeId,
-            Created_at = DateTime.UtcNow,
-        };
-
-        _dbContext.CheckIns.Add(entity);
-        _dbContext.SaveChanges();
+        var checkIn = await this.checkInRepository.CheckInAttendee(attendeeId);
 
         return new ResponseRegisteredJson
         {
-            Id = entity.Id,
+            Id = checkIn.Id,
         };
     }
 
-    private void ValidateAttendee(Guid attendeeId)
+    private async void ValidateAttendee(Guid attendeeId)
     {
-        var attendeeExists = _dbContext.Attendees.Any(attendee => attendee.Id == attendeeId);
+        Attendee attendeeExists = await this.attendeeRepository.FindById(attendeeId);
 
-        if (!attendeeExists)
+        if (attendeeExists is null)
         {
             throw new NotFoundException("Attendee does not exists.");
         }
 
-        var checkInExists = _dbContext.CheckIns.Any(checkIn => checkIn.Attendee_Id == attendeeId);
+        var checkInExists = await this.checkInRepository.FindByAttendeeId(attendeeId);
 
-        if (checkInExists)
+        if (checkInExists is not null)
         {
             throw new ConflictException("Attendee cannot check in twice for the same event.");
         }

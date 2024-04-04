@@ -1,7 +1,7 @@
 ﻿using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
 using PassIn.Exceptions;
-using PassIn.Infrastructure;
+using PassIn.Infrastructure.Database;
 
 namespace PassIn.Application.UseCases.Events.Register;
 public class RegisterEventUseCase
@@ -12,7 +12,7 @@ public class RegisterEventUseCase
 
         var dbContext = new PassInDbContext();
 
-        var entity = new Infrastructure.Entities.Event
+        var entity = new Domain.Entities.Event
         {
             Title = request.Title,
             Details = request.Details,

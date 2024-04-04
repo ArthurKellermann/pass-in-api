@@ -1,31 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PassIn.Communication.Responses;
-using PassIn.Exceptions;
-using PassIn.Infrastructure;
+﻿using PassIn.Communication.Responses;
+using PassIn.Domain.Entities;
+using PassIn.Domain.Repositories.Interfaces;
+using PassIn.Exceptions.CustomExceptions;
 
 namespace PassIn.Application.UseCases.Attendees.GetAllByEventId;
 public class GetAllAttendeesByEventIdUseCase
 {
-    private readonly PassInDbContext _dbContext;
-    public GetAllAttendeesByEventIdUseCase()
+    private readonly IAttendeeRepository attendeeRepository;
+    public GetAllAttendeesByEventIdUseCase(IAttendeeRepository attendeeRepository)
     {
-        _dbContext = new PassInDbContext();
+        this.attendeeRepository = attendeeRepository;
     }
-    public ResponseAllAttendeesJson Execute(Guid eventId)
+    public async Task<ResponseAllAttendeesJson> Execute(Guid eventId)
     {
-        var entity = _dbContext.Events
-            .Include(ev => ev.Attendees)
-            .ThenInclude(attendee => attendee.CheckIn)
-            .FirstOrDefault(ev => ev.Id == eventId);
+        List<Attendee> attendees = await this.attendeeRepository.GetAllByEventId(eventId);
 
-        if (entity is null)
+        if (attendees is null)
         {
             throw new NotFoundException("Event does not exists.");
         }
 
         return new ResponseAllAttendeesJson
         {
-            Attendees = entity.Attendees.Select((attendee) => new ResponseAttendeeJson
+            Attendees = attendees.Select((attendee) => new ResponseAttendeeJson
             {
                 Id = attendee.Id,
                 Name = attendee.Name,
@@ -35,4 +32,5 @@ public class GetAllAttendeesByEventIdUseCase
             }).ToList(),
         };
     }
+
 }

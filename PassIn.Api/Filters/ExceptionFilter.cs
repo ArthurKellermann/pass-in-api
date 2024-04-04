@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using PassIn.Communication.Responses;
-using PassIn.Exceptions;
+using PassIn.Exceptions.ApplicationExcpetions;
+using PassIn.Exceptions.CustomExceptions;
 using System.Net;
 
 namespace PassIn.Api.Filters;

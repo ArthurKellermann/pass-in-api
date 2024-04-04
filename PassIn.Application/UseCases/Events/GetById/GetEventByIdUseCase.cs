@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PassIn.Communication.Responses;
 using PassIn.Exceptions;
-using PassIn.Infrastructure;
+using PassIn.Infrastructure.Database;
 
 namespace PassIn.Application.UseCases.Events.GetById;
 public class GetEventByIdUseCase

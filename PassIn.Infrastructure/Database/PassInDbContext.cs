@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PassIn.Infrastructure.Entities;
+using PassIn.Domain.Entities;
 
-namespace PassIn.Infrastructure;
+namespace PassIn.Infrastructure.Database;
 public class PassInDbContext : DbContext
 {
     public DbSet<Event> Events { get; set; }
