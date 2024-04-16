@@ -15,17 +15,23 @@ public class CheckInAttendeeUseCase
     }
     public async Task<ResponseRegisteredJson> Execute(Guid attendeeId)
     {
-        ValidateAttendee(attendeeId);
+        await ValidateAttendee(attendeeId);
 
-        var checkIn = await this.checkInRepository.CheckInAttendee(attendeeId);
+        var checkIn = new CheckIn
+        {
+            Attendee_Id = attendeeId,
+            Created_at = DateTime.UtcNow,
+        };
+
+        var checkInRegistered = await this.checkInRepository.CheckInAttendee(attendeeId, checkIn);
 
         return new ResponseRegisteredJson
         {
-            Id = checkIn.Id,
+            Id = checkInRegistered.Id,
         };
     }
 
-    private async void ValidateAttendee(Guid attendeeId)
+    private async Task ValidateAttendee(Guid attendeeId)
     {
         Attendee attendeeExists = await this.attendeeRepository.FindById(attendeeId);
 

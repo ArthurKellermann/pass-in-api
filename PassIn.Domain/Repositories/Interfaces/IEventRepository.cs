@@ -3,5 +3,6 @@
 namespace PassIn.Domain.Repositories.Interfaces;
 public interface IEventRepository
 {
-    Task<Event> Register();
+    Task<Event> Register(Event entity);
+    Task<Event> GetEventById(Guid id);
 }

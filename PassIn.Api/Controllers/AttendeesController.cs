@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PassIn.Application.UseCases.Events.RegisterAttendee;
+using PassIn.Application.UseCases.Attendees.RegisterAttendee;
 using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
 

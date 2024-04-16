@@ -1,6 +1,7 @@
 using PassIn.Api.Filters;
 using PassIn.Domain.Repositories;
 using PassIn.Domain.Repositories.Interfaces;
+using PassIn.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)))
 
 builder.Services.AddScoped<IAttendeeRepository, AttendeeRepository>();
 builder.Services.AddScoped<ICheckInRepository, CheckInRepository>();
+builder.Services.AddScoped<IEventRepository, EventsRepository>();
 
 var app = builder.Build();
 

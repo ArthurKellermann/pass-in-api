@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PassIn.Domain.Entities;
 using PassIn.Domain.Repositories.Interfaces;
-using PassIn.Exceptions.CustomExceptions;
 using PassIn.Infrastructure.Database;
 
 namespace PassIn.Domain.Repositories;
@@ -18,7 +17,7 @@ public class AttendeeRepository : IAttendeeRepository
         Event entity = await _dbContext.Events
            .Include(ev => ev.Attendees)
            .ThenInclude(attendee => attendee.CheckIn)
-           .FirstOrDefault(ev => ev.Id == eventId);
+           .FirstOrDefaultAsync(ev => ev.Id == eventId);
 
         return entity.Attendees;
     }
@@ -28,4 +27,21 @@ public class AttendeeRepository : IAttendeeRepository
 
         return attendee;
     }
+
+    public async Task<Attendee> RegisterOnEvent(Guid eventId, Attendee attendee)
+    {
+        var entity = new Attendee
+        {
+            Name = attendee.Name,
+            Email = attendee.Email,
+            EventId = eventId,
+            Created_At = DateTime.UtcNow,
+        };
+
+        _dbContext.Attendees.Add(entity);
+        await _dbContext.SaveChangesAsync();
+
+        return entity;
+    }
+
 }

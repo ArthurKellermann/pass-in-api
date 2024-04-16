@@ -1,41 +1,42 @@
 ﻿using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
-using PassIn.Exceptions;
-using PassIn.Infrastructure;
+using PassIn.Domain.Entities;
+using PassIn.Domain.Repositories.Interfaces;
+using PassIn.Exceptions.CustomExceptions;
 using System.Net.Mail;
 
-namespace PassIn.Application.UseCases.Events.RegisterAttendee;
+namespace PassIn.Application.UseCases.Attendees.RegisterAttendee;
 public class RegisterAttendeeOnEventUseCase
 {
-    private readonly PassInDbContext _dbContext;
-    public RegisterAttendeeOnEventUseCase()
+    private readonly IAttendeeRepository attendeeRepository;
+    private readonly IEventRepository eventRepository;
+    public RegisterAttendeeOnEventUseCase(IAttendeeRepository attendeeRepository, IEventRepository eventRepository)
     {
-        _dbContext = new PassInDbContext();
+        this.attendeeRepository = attendeeRepository;
+        this.eventRepository = eventRepository;
     }
-    public ResponseRegisteredJson Execute(Guid eventId, RequestRegisterEventJson request)
+    public async Task<ResponseRegisteredJson> Execute(Guid eventId, RequestRegisterEventJson request)
     {
         ValidateEvent(request, eventId);
 
-        var entity = new Infrastructure.Entities.Attendee
+        var attendee = new Attendee
         {
             Name = request.Name,
             Email = request.Email,
             EventId = eventId,
-            Created_At = DateTime.UtcNow,
         };
 
-        _dbContext.Attendees.Add(entity);
-        _dbContext.SaveChanges();
+        var attendeeOnEvent = await attendeeRepository.RegisterOnEvent(eventId, attendee);
 
         return new ResponseRegisteredJson
         {
-            Id = entity.Id,
+            Id = attendeeOnEvent.Id,
         };
     }
 
-    private void ValidateEvent(RequestRegisterEventJson request, Guid eventId)
+    private async Task ValidateEvent(RequestRegisterEventJson request, Guid eventId)
     {
-        var eventEntity = _dbContext.Events.Find(ev => ev.Id == eventId);
+        var eventEntity = await this.eventRepository.GetEventById(eventId);
 
         if (eventEntity is null)
         {

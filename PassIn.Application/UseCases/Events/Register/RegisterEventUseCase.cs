@@ -1,16 +1,19 @@
 ﻿using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
-using PassIn.Exceptions;
-using PassIn.Infrastructure.Database;
+using PassIn.Domain.Repositories.Interfaces;
+using PassIn.Exceptions.CustomExceptions;
 
 namespace PassIn.Application.UseCases.Events.Register;
 public class RegisterEventUseCase
 {
-    public ResponseRegisteredJson Execute(RequestEventJson request)
+    private readonly IEventRepository eventRepository;
+    public RegisterEventUseCase(IEventRepository eventRepository)
+    {
+        this.eventRepository = eventRepository;
+    }
+    public async Task<ResponseRegisteredJson> Execute(RequestEventJson request)
     {
         Validate(request);
-
-        var dbContext = new PassInDbContext();
 
         var entity = new Domain.Entities.Event
         {
@@ -20,12 +23,11 @@ public class RegisterEventUseCase
             Slug = request.Title.ToLower().Replace(" ", "-")
         };
 
-        dbContext.Events.Add(entity);
-        dbContext.SaveChanges();
+        var registeredEvent = await this.eventRepository.Register(entity);
 
         return new ResponseRegisteredJson
         {
-            Id = entity.Id,
+            Id = registeredEvent.Id,
         };
     }
 

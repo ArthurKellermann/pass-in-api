@@ -12,14 +12,8 @@ public class CheckInRepository : ICheckInRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<CheckIn> CheckInAttendee(Guid attendeeId)
+    public async Task<CheckIn> CheckInAttendee(Guid attendeeId, CheckIn checkIn)
     {
-        var checkIn = new CheckIn
-        {
-            Attendee_Id = attendeeId,
-            Created_at = DateTime.UtcNow,
-        };
-
         await _dbContext.CheckIns.AddAsync(checkIn);
         await _dbContext.SaveChangesAsync(); 
 
