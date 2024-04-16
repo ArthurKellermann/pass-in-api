@@ -5,4 +5,5 @@ public interface IEventRepository
 {
     Task<Event> Register(Event entity);
     Task<Event> GetEventById(Guid id);
+    Task<int> GetNumberOfAttendeesByEventId(Guid id);
 }

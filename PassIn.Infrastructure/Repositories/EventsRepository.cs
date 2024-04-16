@@ -19,9 +19,17 @@ public class EventsRepository : IEventRepository
         return entity;
     }
 
-    public Task<Event> Register(Event entity)
+    public async Task<Event> Register(Event entity)
     {
-        await _dbContext.Events.Add(entity);
+        await _dbContext.Events.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
+
+        return entity;
+    }
+    public async Task<int> GetNumberOfAttendeesByEventId(Guid id)
+    {
+        var numberOfAttendessForEvenet = await _dbContext.Attendees.CountAsync(attendee => attendee.EventId == id);
+
+        return numberOfAttendessForEvenet;
     }
 }

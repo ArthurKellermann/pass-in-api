@@ -7,10 +7,12 @@ namespace PassIn.Application.UseCases.Attendees.GetAllByEventId;
 public class GetAllAttendeesByEventIdUseCase
 {
     private readonly IAttendeeRepository attendeeRepository;
+
     public GetAllAttendeesByEventIdUseCase(IAttendeeRepository attendeeRepository)
     {
         this.attendeeRepository = attendeeRepository;
     }
+
     public async Task<ResponseAllAttendeesJson> Execute(Guid eventId)
     {
         List<Attendee> attendees = await this.attendeeRepository.GetAllByEventId(eventId);

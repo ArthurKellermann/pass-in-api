@@ -1,4 +1,5 @@
-﻿using PassIn.Communication.Responses;
+﻿using FluentValidation;
+using PassIn.Communication.Responses;
 using PassIn.Domain.Entities;
 using PassIn.Domain.Repositories.Interfaces;
 using PassIn.Exceptions.CustomExceptions;
@@ -8,11 +9,13 @@ public class CheckInAttendeeUseCase
 {
     private readonly ICheckInRepository checkInRepository;
     private readonly IAttendeeRepository attendeeRepository;
+
     public CheckInAttendeeUseCase(ICheckInRepository checkInRepository, IAttendeeRepository attendeeRepository)
     {
         this.checkInRepository = checkInRepository;
         this.attendeeRepository = attendeeRepository;
     }
+
     public async Task<ResponseRegisteredJson> Execute(Guid attendeeId)
     {
         await ValidateAttendee(attendeeId);

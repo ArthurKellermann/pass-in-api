@@ -6,10 +6,12 @@ namespace PassIn.Application.UseCases.Events.GetById;
 public class GetEventByIdUseCase
 {
     private readonly IEventRepository eventRepository;
+
     public GetEventByIdUseCase(IEventRepository eventRepository)
     {
         this.eventRepository = eventRepository;
     }
+
     public async Task<ResponseEventJson> Execute(Guid id)
     {
 

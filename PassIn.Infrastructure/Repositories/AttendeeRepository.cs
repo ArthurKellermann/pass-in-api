@@ -44,4 +44,18 @@ public class AttendeeRepository : IAttendeeRepository
         return entity;
     }
 
+    public async Task<bool> IsRegisteredForEvent(string email, Guid eventId)
+    {
+        var isRegistered = await _dbContext
+            .Attendees
+            .FirstOrDefaultAsync(att => att.Email.Equals(email) && att.EventId.Equals(eventId));
+
+        if (isRegistered is null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 }
