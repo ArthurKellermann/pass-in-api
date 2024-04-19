@@ -12,9 +12,8 @@ PassIn is a web application developed using ASP.NET Core, designed to manage eve
 ## What I Learned
 During the development of this project, I gained experience in:
 
-- Implementing Clean Architecture principles to structure the project.
+- Implementing Clean Architecture and SOLID principles to structure the project.
 - Writing unit tests to ensure the reliability and correctness of the application.
-- Consuming external APIs to integrate additional functionalities.
 - Configuring and using Swagger for API documentation.
 
   ## Features
