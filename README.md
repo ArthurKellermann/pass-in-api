@@ -62,6 +62,6 @@ During the development of this project, I gained experience in:
   - **Route:** `/api/events/{id}`
   - **Description:** Retrieves event details by ID.
 
-### License
+## License
 
 MIT
