@@ -1,5 +1,6 @@
 using FluentValidation;
 using PassIn.Api.Filters;
+using PassIn.Application.UseCases.Events.Register;
 using PassIn.Application.Validators;
 using PassIn.Domain.Entities;
 using PassIn.Domain.Repositories;
@@ -23,6 +24,8 @@ builder.Services.AddScoped<IEventRepository, EventsRepository>();
 
 builder.Services.AddScoped<AbstractValidator<Attendee>, AttendeeValidator>();
 builder.Services.AddScoped<AbstractValidator<Event>, EventValidator>();
+
+builder.Services.AddScoped<RegisterEventUseCase>();
 
 var app = builder.Build();
 

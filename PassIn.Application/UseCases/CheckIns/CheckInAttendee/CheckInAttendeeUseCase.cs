@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using PassIn.Communication.Responses;
+﻿using PassIn.Communication.Responses;
 using PassIn.Domain.Entities;
 using PassIn.Domain.Repositories.Interfaces;
 using PassIn.Exceptions.CustomExceptions;
@@ -7,13 +6,13 @@ using PassIn.Exceptions.CustomExceptions;
 namespace PassIn.Application.UseCases.CheckIns.CheckInAttendee;
 public class CheckInAttendeeUseCase
 {
-    private readonly ICheckInRepository checkInRepository;
-    private readonly IAttendeeRepository attendeeRepository;
+    private readonly ICheckInRepository _checkInRepository;
+    private readonly IAttendeeRepository _attendeeRepository;
 
     public CheckInAttendeeUseCase(ICheckInRepository checkInRepository, IAttendeeRepository attendeeRepository)
     {
-        this.checkInRepository = checkInRepository;
-        this.attendeeRepository = attendeeRepository;
+        this._checkInRepository = checkInRepository;
+        this._attendeeRepository = attendeeRepository;
     }
 
     public async Task<ResponseRegisteredJson> Execute(Guid attendeeId)
@@ -26,7 +25,7 @@ public class CheckInAttendeeUseCase
             Created_at = DateTime.UtcNow,
         };
 
-        var checkInRegistered = await this.checkInRepository.CheckInAttendee(attendeeId, checkIn);
+        var checkInRegistered = await _checkInRepository.CheckInAttendee(attendeeId, checkIn);
 
         return new ResponseRegisteredJson
         {
@@ -36,14 +35,14 @@ public class CheckInAttendeeUseCase
 
     private async Task ValidateAttendee(Guid attendeeId)
     {
-        Attendee attendeeExists = await this.attendeeRepository.FindById(attendeeId);
+        Attendee attendeeExists = await _attendeeRepository.FindById(attendeeId);
 
         if (attendeeExists is null)
         {
             throw new NotFoundException("Attendee does not exists.");
         }
 
-        var checkInExists = await this.checkInRepository.FindByAttendeeId(attendeeId);
+        var checkInExists = await _checkInRepository.FindByAttendeeId(attendeeId);
 
         if (checkInExists is not null)
         {

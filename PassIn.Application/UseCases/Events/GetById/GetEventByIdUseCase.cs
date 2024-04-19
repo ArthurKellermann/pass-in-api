@@ -5,17 +5,17 @@ using PassIn.Exceptions.CustomExceptions;
 namespace PassIn.Application.UseCases.Events.GetById;
 public class GetEventByIdUseCase
 {
-    private readonly IEventRepository eventRepository;
+    private readonly IEventRepository _eventRepository;
 
     public GetEventByIdUseCase(IEventRepository eventRepository)
     {
-        this.eventRepository = eventRepository;
+        this._eventRepository = eventRepository;
     }
 
     public async Task<ResponseEventJson> Execute(Guid id)
     {
 
-        var entity = await this.eventRepository.GetEventById(id);
+        var entity = await _eventRepository.GetEventById(id);
 
         if (entity is null)
         {

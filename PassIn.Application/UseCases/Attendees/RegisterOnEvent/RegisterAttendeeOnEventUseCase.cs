@@ -9,18 +9,18 @@ namespace PassIn.Application.UseCases.Attendees.RegisterAttendee
 {
     public class RegisterAttendeeOnEventUseCase
     {
-        private readonly IAttendeeRepository attendeeRepository;
-        private readonly IEventRepository eventRepository;
-        private readonly AbstractValidator<Attendee> attendeeValidator;
+        private readonly IAttendeeRepository _attendeeRepository;
+        private readonly IEventRepository _eventRepository;
+        private readonly AbstractValidator<Attendee> _attendeeValidator;
 
         public RegisterAttendeeOnEventUseCase(
             IAttendeeRepository attendeeRepository,
             IEventRepository eventRepository,
             AbstractValidator<Attendee> attendeeValidator)
         {
-            this.attendeeRepository = attendeeRepository;
-            this.eventRepository = eventRepository;
-            this.attendeeValidator = attendeeValidator;
+            this._attendeeRepository = attendeeRepository;
+            this._eventRepository = eventRepository;
+            this._attendeeValidator = attendeeValidator;
         }
 
         public async Task<ResponseRegisteredJson> Execute(Guid eventId, RequestRegisterEventJson request)
@@ -34,7 +34,7 @@ namespace PassIn.Application.UseCases.Attendees.RegisterAttendee
                 EventId = eventId,
             };
 
-            var validationResult = this.attendeeValidator.Validate(attendee);
+            var validationResult = _attendeeValidator.Validate(attendee);
 
             if (!validationResult.IsValid)
             {
@@ -42,7 +42,7 @@ namespace PassIn.Application.UseCases.Attendees.RegisterAttendee
                 throw new ErrorOnValidationException(string.Join(", ", errors));
             }
 
-            var attendeeOnEvent = await attendeeRepository.RegisterOnEvent(eventId, attendee);
+            var attendeeOnEvent = await _attendeeRepository.RegisterOnEvent(eventId, attendee);
 
             return new ResponseRegisteredJson
             {
@@ -52,21 +52,21 @@ namespace PassIn.Application.UseCases.Attendees.RegisterAttendee
 
         private async Task ValidateEvent(RequestRegisterEventJson request, Guid eventId)
         {
-            var eventEntity = await this.eventRepository.GetEventById(eventId);
+            var eventEntity = await _eventRepository.GetEventById(eventId);
 
             if (eventEntity is null)
             {
                 throw new NotFoundException("Event does not exist.");
             }
 
-            var attendeeAlreadyRegistered = await this.attendeeRepository.IsRegisteredForEvent(request.Email, eventId);
+            var attendeeAlreadyRegistered = await _attendeeRepository.IsRegisteredForEvent(request.Email, eventId);
 
             if (attendeeAlreadyRegistered)
             {
                 throw new ConflictException("You cannot register twice for the same event.");
             }
 
-            var attendeesForEvent = await this.eventRepository.GetNumberOfAttendeesByEventId(eventId);
+            var attendeesForEvent = await _eventRepository.GetNumberOfAttendeesByEventId(eventId);
 
             if (attendeesForEvent == eventEntity.Maximum_Attendees)
             {

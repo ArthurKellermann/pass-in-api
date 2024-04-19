@@ -7,16 +7,21 @@ namespace PassIn.Api.Controllers;
 [ApiController]
 public class CheckInController : ControllerBase
 {
+    private readonly CheckInAttendeeUseCase _checkInAttendeetUseCase;
+    public CheckInController(CheckInAttendeeUseCase checkInAttendeetUseCase)
+    {
+
+        this._checkInAttendeetUseCase = checkInAttendeetUseCase;
+
+    }
     [HttpPost]
     [Route("{attendeeId}")]
     [ProducesResponseType(typeof(ResponseRegisteredJson), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status409Conflict)]
-    public IActionResult CheckIn([FromRoute] Guid attendeeId)
+    public async Task<IActionResult> CheckIn([FromRoute] Guid attendeeId)
     {
-        var checkInAttendeeUseCase = new CheckInAttendeeUseCase();
-
-        var response = checkInAttendeeUseCase.Execute(attendeeId);
+        var response = await _checkInAttendeetUseCase.Execute(attendeeId);
 
         return Created(string.Empty, response);
     }

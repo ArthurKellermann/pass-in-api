@@ -8,13 +8,13 @@ using PassIn.Exceptions.CustomExceptions;
 namespace PassIn.Application.UseCases.Events.Register;
 public class RegisterEventUseCase
 {
-    private readonly IEventRepository eventRepository;
-    private readonly AbstractValidator<Event> eventvalidator;
+    private readonly IEventRepository _eventRepository;
+    private readonly AbstractValidator<Event> _eventvalidator;
 
     public RegisterEventUseCase(IEventRepository eventRepository, AbstractValidator<Event> eventvalidator)
     {
-        this.eventRepository = eventRepository;
-        this.eventvalidator = eventvalidator;
+        this._eventRepository = eventRepository;
+        this._eventvalidator = eventvalidator;
     }
 
     public async Task<ResponseRegisteredJson> Execute(RequestEventJson request)
@@ -26,7 +26,7 @@ public class RegisterEventUseCase
             Maximum_Attendees = request.MaximumAttendees,
             Slug = request.Title.ToLower().Replace(" ", "-")
         };
-        var validationResult = this.eventvalidator.Validate(entity);
+        var validationResult = _eventvalidator.Validate(entity);
 
         if (!validationResult.IsValid)
         {
@@ -34,7 +34,7 @@ public class RegisterEventUseCase
             throw new ErrorOnValidationException(string.Join(", ", errors));
         }
 
-        var registeredEvent = await this.eventRepository.Register(entity);
+        var registeredEvent = await _eventRepository.Register(entity);
 
         return new ResponseRegisteredJson
         {

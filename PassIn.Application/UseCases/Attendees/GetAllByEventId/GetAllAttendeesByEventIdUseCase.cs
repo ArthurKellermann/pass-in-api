@@ -6,16 +6,16 @@ using PassIn.Exceptions.CustomExceptions;
 namespace PassIn.Application.UseCases.Attendees.GetAllByEventId;
 public class GetAllAttendeesByEventIdUseCase
 {
-    private readonly IAttendeeRepository attendeeRepository;
+    private readonly IAttendeeRepository _attendeeRepository;
 
     public GetAllAttendeesByEventIdUseCase(IAttendeeRepository attendeeRepository)
     {
-        this.attendeeRepository = attendeeRepository;
+        this._attendeeRepository = attendeeRepository;
     }
 
     public async Task<ResponseAllAttendeesJson> Execute(Guid eventId)
     {
-        List<Attendee> attendees = await this.attendeeRepository.GetAllByEventId(eventId);
+        List<Attendee> attendees = await _attendeeRepository.GetAllByEventId(eventId);
 
         if (attendees is null)
         {
