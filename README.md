@@ -13,7 +13,6 @@ PassIn is a web application developed using ASP.NET Core, designed to manage eve
 During the development of this project, I gained experience in:
 
 - Implementing Clean Architecture and SOLID principles to structure the project.
-- Writing unit tests to ensure the reliability and correctness of the application.
 - Configuring and using Swagger for API documentation.
 
   ## Features
